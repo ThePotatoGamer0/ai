@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const API_BASE = 'https://ai.potatogamer.uk';
   
     let ws;
+    let typingEffectInterval; // Store the typing effect interval to clear it later
     
     function startTypingEffect(element, phrases, interval = 100, pause = 1500) {
         let index = 0;
@@ -32,11 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 index = (index + 1) % phrases.length;
                 setTimeout(type, interval);
             } else {
-                setTimeout(type, interval);
+                typingEffectInterval = setTimeout(type, interval); // Store the interval
             }
         }
       
         type();
+    }
+
+    function stopTypingEffect() {
+        clearTimeout(typingEffectInterval); // Clear the interval to stop the typing animation
     }
     
     function typeTextWithinTime(element, text, duration = 1000) {
@@ -107,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // Clear any typing animation and type out the response
             setTimeout(() => {
+                stopTypingEffect(); // Stop the animation
                 typeTextWithinTime(potatoResponse, response, 1000); // Finish typing within 1 second
             }, 0); // Start immediately after stopping animation
         }
@@ -168,7 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const taskId = data.task_id;
                 connectWebSocket(taskId, (reply) => {
-                    // Clear any typing animation and update the response
+                    // Stop typing animation and show response
+                    stopTypingEffect();
                     tempMessage.innerHTML = `
                         <strong>You:</strong> ${prompt}<br>
                         <strong>PotatoGPT:</strong> ${reply}
