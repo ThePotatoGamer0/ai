@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PotatoGPT Setup</title>
+  <link rel="stylesheet" href="../stylesheet.css" />
+  <script defer src="setup.js"></script>
+</head>
+<body>
+  <div id="setup" class="panel">
+    <h1>Character Setup</h1>
+    <form id="setup-form">
+      <section>
+        <label>Character Name <input type="text" name="name" required /></label>
+        <label>Age <input type="number" name="age" /></label>
+        <label>Gender <input type="text" name="gender" /></label>
+        <label>Species <input type="text" name="species" /></label>
+        <label>Height <input type="text" name="height" /></label>
+        <label>Weight <input type="text" name="weight" /></label>
+        <label>Physique <input type="text" name="physique" /></label>
+        <label>Relationships <input type="text" name="relationships" /></label>
+      </section>
+      <section>
+        <label>Plot <textarea name="plot"></textarea></label>
+        <label>System Prompt <textarea name="systemPrompt"></textarea></label>
+        <label>AI Model
+          <select name="model">
+            <option value="llama3">llama3</option>
+            <option value="benevolentjoker/nsfwmonika">NSFW Monika</option>
+            <option value="benevolentjoker/nsfwvanessa">NSFW Vanessa</option>
+          </select>
+        </label>
+      </section>
+      <section>
+        <p>Writing Styles</p>
+        <div class="checkbox-group">
+          <input type="checkbox" id="style-descriptive" name="styles" value="Descriptive" />
+          <label for="style-descriptive">Descriptive</label>
+
+          <input type="checkbox" id="style-witty" name="styles" value="Witty" />
+          <label for="style-witty">Witty</label>
+
+          <input type="checkbox" id="style-dark" name="styles" value="Dark" />
+          <label for="style-dark">Dark</label>
+
+          <input type="checkbox" id="style-romantic" name="styles" value="Romantic" />
+          <label for="style-romantic">Romantic</label>
+
+          <input type="checkbox" id="style-comedic" name="styles" value="Comedic" />
+          <label for="style-comedic">Comedic</label>
+        </div>
+      </section>
+      <button type="submit">Submit</button>
+      <button type="button" id="skip-setup">Skip</button>
+      <button type="button" id="import-config">Import</button>
+      <button type="button" id="export-config">Export</button>
+      <input type="file" id="import-file" style="display:none" />
+    </form>
+  </div>
+</body>
+</html>

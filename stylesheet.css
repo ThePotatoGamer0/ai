@@ -1,0 +1,144 @@
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background-color: #111;
+    color: #eee;
+  }
+  
+  .panel {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    background-color: #222;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 6px;
+  }
+  
+  textarea {
+    resize: vertical;
+  }
+  
+  button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    margin: 0.3rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  button:hover {
+    background-color: #555;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .chat-history {
+    max-height: 75vh;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid #444;
+    background-color: #1a1a1a;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+  }
+  
+  .chat-item {
+    margin-bottom: 1rem;
+    padding: 0.6rem;
+    background-color: #222;
+    border-radius: 8px;
+    line-height: 1.5;
+  }
+  
+  .chat-input-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  #chat-input {
+    flex-grow: 1;
+    background-color: #222;
+    color: white;
+    border: 1px solid #444;
+    padding: 0.6rem;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  #send-btn,
+  #new-chat-btn,
+  #settings-btn {
+    background-color: #222;
+    border: 1px solid #444;
+    padding: 0.6rem;
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #eee;
+  }
+  
+  #send-btn:hover,
+  #new-chat-btn:hover,
+  #settings-btn:hover {
+    background-color: #444;
+  }
+  
+  /* Custom checkbox styling */
+  input[type="checkbox"] {
+    display: none;
+  }
+  
+  input[type="checkbox"] + label {
+    display: inline-block;
+    background-color: #222;
+    color: #ccc;
+    padding: 0.5rem 1rem;
+    margin: 0.25rem;
+    border: 1px solid #444;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+    position: relative;
+  }
+  
+  input[type="checkbox"]:checked + label {
+    background-color: #444;
+    color: #fff;
+    border-color: #666;
+  }
+  
+  input[type="checkbox"]:checked + label::after {
+    content: '\2713';
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    font-size: 1rem;
+    color: lime;
+  }
+  
