@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     function connectWebSocket(taskId, onDone) {
-      ws = new WebSocket(`wss://ai.potatogamer.uk/result/${taskId}`);
+      ws = new WebSocket(`wss://ai.potatogamer.uk/ws/${taskId}`);
   
       ws.onmessage = (event) => {
         try {
