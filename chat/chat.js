@@ -105,9 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Typing furiously...'
             ]);
         } else {
-            // Stop any ongoing typing animation before displaying the response
-            clearInterval(potatoResponse.typeInterval); // Clear the interval if it exists
-            typeTextWithinTime(potatoResponse, response, 1000); // Finish typing within 1 second
+            // Clear any typing animation and type out the response
+            setTimeout(() => {
+                typeTextWithinTime(potatoResponse, response, 1000); // Finish typing within 1 second
+            }, 0); // Start immediately after stopping animation
         }
       
         return potatoResponse;
@@ -167,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const taskId = data.task_id;
                 connectWebSocket(taskId, (reply) => {
-                    // Replace loading animation with actual AI response
+                    // Clear any typing animation and update the response
                     tempMessage.innerHTML = `
                         <strong>You:</strong> ${prompt}<br>
                         <strong>PotatoGPT:</strong> ${reply}
