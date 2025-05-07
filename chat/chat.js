@@ -73,11 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
         ws.onclose = (event) => {
           console.log('[WebSocket] Connection closed:', event);
         };
+
+        ws.onopen = () => {
+            console.log("[WebSocket] Connected!");
+          };
+          
       }
-      
-      ws.onopen = () => {
-        console.log("[WebSocket] Connected!");
-      };
       
   
     function sendPrompt() {
