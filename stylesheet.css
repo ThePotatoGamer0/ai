@@ -142,3 +142,11 @@ body {
     color: lime;
   }
   
+  .typing-animation {
+    font-style: italic;
+    color: #aaa;
+    margin-left: 5px;
+    display: inline-block;
+    white-space: pre;
+  }
+  
