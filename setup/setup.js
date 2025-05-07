@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   
     skipBtn.addEventListener('click', () => {
-      window.location.href = 'chat.html';
+      window.location.href = '../chat';
     });
   });
   
