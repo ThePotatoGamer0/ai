@@ -47,21 +47,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     function connectWebSocket(taskId, onDone) {
-      ws = new WebSocket(`wss://ai.potatogamer.uk/ws/${taskId}`);
-  
-      ws.onmessage = (event) => {
-        console.log('WebSocket message received:', event.data);
-        try {
-          const data = JSON.parse(event.data);
-          if (data.status === 'done') {
-            onDone(data.response);
-            ws.close();
+        ws = new WebSocket(`wss://ai.potatogamer.uk/ws/${taskId}`);
+      
+        ws.onopen = () => {
+          console.log('[WebSocket] Connection established');
+        };
+      
+        ws.onmessage = (event) => {
+          console.log('WebSocket message received:', event.data);
+          try {
+            const data = JSON.parse(event.data);
+            if (data.status === 'done') {
+              onDone(data.response);
+              ws.close();
+            }
+          } catch (err) {
+            console.error('WebSocket parse error:', err);
           }
-        } catch (err) {
-          console.error('WebSocket parse error:', err);
-        }
+        };
+      
+        ws.onerror = (err) => {
+          console.error('[WebSocket] Error:', err);
+        };
+      
+        ws.onclose = (event) => {
+          console.log('[WebSocket] Connection closed:', event);
+        };
+      }
+      
+      ws.onopen = () => {
+        console.log("[WebSocket] Connected!");
       };
-    }
+      
   
     function sendPrompt() {
       const prompt = input.value.trim();
