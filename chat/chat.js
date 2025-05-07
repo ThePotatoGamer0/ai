@@ -177,8 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Stop typing animation and show response
                     stopTypingEffect();
                     tempMessage.innerHTML = `
-                        <strong>You:</strong> ${prompt}<br>
-                        <strong>PotatoGPT:</strong> ${reply}
+                        <strong>PotatoGPT:</strong> ${reply}  <!-- Only update the response part -->
                     `;
                     // Save to history
                     const history = loadHistory();
