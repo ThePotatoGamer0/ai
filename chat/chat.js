@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ws = new WebSocket(`wss://ai.potatogamer.uk/ws/${taskId}`);
   
       ws.onmessage = (event) => {
+        console.log('WebSocket message received:', event.data);
         try {
           const data = JSON.parse(event.data);
           if (data.status === 'done') {
@@ -59,10 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
           console.error('WebSocket parse error:', err);
         }
-      };
-  
-      ws.onerror = (err) => {
-        console.error('WebSocket error:', err);
       };
     }
   
