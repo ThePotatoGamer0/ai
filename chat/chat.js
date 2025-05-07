@@ -105,11 +105,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Typing furiously...'
             ]);
         } else {
-            typeTextWithinTime(potatoResponse, response, 1000); // finish in 1 second
+            // Delay the response display to simulate typing effect for 1 second
+            setTimeout(() => {
+                typeTextWithinTime(potatoResponse, response, 1000); // finish in 1 second
+            }, 1000); // Delay response for 1 second after animation starts
         }
       
         return potatoResponse;
     }
+    
   
     function connectWebSocket(taskId, onDone) {
         ws = new WebSocket(`wss://ai.potatogamer.uk/ws/${taskId}`);
