@@ -6,36 +6,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyBox = document.getElementById('chat-history');
     
     const API_BASE = 'https://ai.potatogamer.uk';
-  
+
     let ws;
-    let typingEffectInterval; // Store the typing effect interval to clear it later
-    
+    let typingEffectTimeout = null;
+
     function startTypingEffect(element, text, interval = 100) {
         let charIndex = 0;
-      
+        element.textContent = ''; // clear existing content
+
         function type() {
-            element.textContent += text[charIndex++];
             if (charIndex < text.length) {
-                typingEffectInterval = setTimeout(type, interval);
+                element.textContent += text[charIndex++];
+                typingEffectTimeout = setTimeout(type, interval);
             }
         }
-      
+
         type();
     }
 
     function stopTypingEffect() {
-        clearTimeout(typingEffectInterval); // Stop the typing animation
+        clearTimeout(typingEffectTimeout);
     }
-    
+
     function loadConfig() {
         const raw = localStorage.getItem('chatConfig');
         return raw ? JSON.parse(raw) : {};
     }
-  
+
     function saveHistory(history) {
         localStorage.setItem('chatHistory', JSON.stringify(history));
     }
-  
+
     function loadHistory() {
         const raw = localStorage.getItem('chatHistory');
         try {
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return [];
         }
     }
-  
+
     function renderHistory() {
         const history = loadHistory();
         historyBox.innerHTML = '';
@@ -55,43 +56,35 @@ document.addEventListener('DOMContentLoaded', () => {
             historyBox.appendChild(item);
         });
     }
-  
+
     function appendMessage(prompt, response = '', isLoading = false) {
-        const historyBox = document.getElementById('chat-history');
         const item = document.createElement('div');
         item.className = 'chat-item';
-      
-        const userText = `<strong>You:</strong> ${prompt}<br><strong>PotatoGPT:</strong> `;
-        item.innerHTML = userText;
-      
-        const potatoResponse = document.createElement('span');
-        potatoResponse.className = 'potato-response';
-        item.appendChild(potatoResponse);
-      
+
+        item.innerHTML = `<strong>You:</strong> ${prompt}<br><strong>PotatoGPT:</strong> `;
+        const responseSpan = document.createElement('span');
+        responseSpan.className = 'potato-response';
+        item.appendChild(responseSpan);
+
         historyBox.appendChild(item);
         historyBox.scrollTop = historyBox.scrollHeight;
-      
+
         if (isLoading) {
-            // Start typing animation for the loading state
-            startTypingEffect(potatoResponse, 'Cooking up some goodness...', 150);
-        } else {
-            // Show the response with typing animation
-            setTimeout(() => {
-                stopTypingEffect(); // Stop the loading animation if any
-                startTypingEffect(potatoResponse, response, 50); // Animate response text typing
-            }, 0); // Start typing immediately after stopping any existing animation
+            startTypingEffect(responseSpan, 'Cooking up some goodness...', 150);
+        } else if (response) {
+            startTypingEffect(responseSpan, response, 50);
         }
-      
-        return potatoResponse;
+
+        return responseSpan; // Return the span so we can update it later
     }
-    
+
     function connectWebSocket(taskId, onDone) {
         ws = new WebSocket(`wss://ai.potatogamer.uk/ws/${taskId}`);
-      
+
         ws.onopen = () => {
             console.log('[WebSocket] Connection established');
         };
-      
+
         ws.onmessage = (event) => {
             console.log('WebSocket message received:', event.data);
             try {
@@ -104,29 +97,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('WebSocket parse error:', err);
             }
         };
-      
+
         ws.onerror = (err) => {
             console.error('[WebSocket] Error:', err);
         };
-      
+
         ws.onclose = (event) => {
             console.log('[WebSocket] Connection closed:', event);
         };
     }
-  
+
     function sendPrompt() {
         const prompt = input.value.trim();
         if (!prompt) return;
         input.value = '';
-      
+
         const config = loadConfig();
         const history = loadHistory();
-      
+
         const formatted = `You are PotatoGPT.\nStyles: ${config.styles?.join(', ') || 'None'}\n\nPrevious conversation:\n${history.map(h => `You: ${h.prompt}\nPotatoGPT: ${h.response}`).join('\n')}\nYou: ${prompt}\nPotatoGPT:`;
 
-        // Immediately show the user prompt and loading animation
-        const tempMessage = appendMessage(prompt, '', true);
-      
+        const responseSpan = appendMessage(prompt, '', true);
+
         fetch(`${API_BASE}/ask`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -139,13 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const taskId = data.task_id;
                 connectWebSocket(taskId, (reply) => {
-                    // Stop typing animation and show response
-                    stopTypingEffect();
-                    tempMessage.innerHTML = `
-                        <strong>PotatoGPT:</strong> 
-                    `;
-                    startTypingEffect(tempMessage.querySelector('.potato-response'), reply, 50); // Animate response text typing
-                    // Save to history
+                    stopTypingEffect(); // Stop the loading animation
+                    responseSpan.textContent = ''; // Clear "cooking" text
+                    startTypingEffect(responseSpan, reply, 50); // Animate final response
                     const history = loadHistory();
                     history.push({ prompt, response: reply });
                     if (history.length > 100) history.shift();
@@ -154,10 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error('Fetch error:', err);
-                tempMessage.innerHTML = `<strong>You:</strong> ${prompt}<br><strong>PotatoGPT:</strong> <em>Error: failed to connect</em>`;
+                responseSpan.innerHTML = '<em>Error: failed to connect</em>';
             });
     }
-  
+
     sendBtn.addEventListener('click', sendPrompt);
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -165,15 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
             sendPrompt();
         }
     });
-  
+
     newChatBtn.addEventListener('click', () => {
         localStorage.removeItem('chatHistory');
         renderHistory();
     });
-  
+
     settingsBtn.addEventListener('click', () => {
         window.location.href = 'index.html';
     });
-  
+
     renderHistory();
 });
