@@ -175,7 +175,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     newChatBtn.addEventListener('click', () => {
         localStorage.removeItem('chatHistory');
+        localStorage.removeItem('chatConfig');
         renderHistory();
+        window.location.href = '../setup';
     });
 
     settingsBtn.addEventListener('click', () => {

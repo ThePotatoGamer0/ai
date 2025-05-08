@@ -12,15 +12,12 @@
     <h1>Character Setup</h1>
     <form id="setup-form">
       <section>
-        <label>Character Name <input type="text" name="name" required /></label>
-        <label>Age <input type="number" name="age" /></label>
-        <label>Gender <input type="text" name="gender" /></label>
-        <label>Species <input type="text" name="species" /></label>
-        <label>Height <input type="text" name="height" /></label>
-        <label>Weight <input type="text" name="weight" /></label>
-        <label>Physique <input type="text" name="physique" /></label>
-        <label>Relationships <input type="text" name="relationships" /></label>
+        <label>Number of Characters <input type="number" id="char-count" min="1" value="1" /></label>
+        <button type="button" id="generate-chars">Generate Characters</button>
       </section>
+
+      <div id="character-forms"></div>
+
       <section>
         <label>Plot <textarea name="plot"></textarea></label>
         <label>System Prompt <textarea name="systemPrompt"></textarea></label>
@@ -32,6 +29,7 @@
           </select>
         </label>
       </section>
+
       <section>
         <p>Writing Styles</p>
         <div class="checkbox-group">
@@ -51,6 +49,7 @@
           <label for="style-comedic">Comedic</label>
         </div>
       </section>
+
       <button type="submit">Submit</button>
       <button type="button" id="skip-setup">Skip</button>
       <button type="button" id="import-config">Import</button>
