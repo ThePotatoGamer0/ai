@@ -10,30 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let ws;
     let typingEffectInterval; // Store the typing effect interval to clear it later
     
-    function startTypingEffect(element, phrases, interval = 100, pause = 1500) {
-        let index = 0;
+    function startTypingEffect(element, text, interval = 100) {
         let charIndex = 0;
-        let deleting = false;
       
         function type() {
-            const currentPhrase = phrases[index];
-            if (deleting) {
-                charIndex--;
-                if (charIndex === 0) deleting = false;
-            } else {
-                charIndex++;
-                if (charIndex === currentPhrase.length) deleting = true;
-            }
-      
-            element.textContent = currentPhrase.substring(0, charIndex);
-      
-            if (!deleting && charIndex === currentPhrase.length) {
-                setTimeout(type, pause);
-            } else if (deleting && charIndex === 0) {
-                index = (index + 1) % phrases.length;
-                setTimeout(type, interval);
-            } else {
-                typingEffectInterval = setTimeout(type, interval); // Store the interval
+            element.textContent += text[charIndex++];
+            if (charIndex < text.length) {
+                typingEffectInterval = setTimeout(type, interval);
             }
         }
       
@@ -41,20 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function stopTypingEffect() {
-        clearTimeout(typingEffectInterval); // Clear the interval to stop the typing animation
-    }
-    
-    function typeTextWithinTime(element, text, duration = 1000) {
-        const totalChars = text.length;
-        if (totalChars === 0) return;
-      
-        const delay = duration / totalChars;
-        let i = 0;
-      
-        const interval = setInterval(() => {
-            element.textContent += text[i++];
-            if (i >= totalChars) clearInterval(interval);
-        }, delay);
+        clearTimeout(typingEffectInterval); // Stop the typing animation
     }
     
     function loadConfig() {
@@ -102,19 +72,14 @@ document.addEventListener('DOMContentLoaded', () => {
         historyBox.scrollTop = historyBox.scrollHeight;
       
         if (isLoading) {
-            startTypingEffect(potatoResponse, [
-                'Cooking up some goodness...',
-                'Writing fire...',
-                'Consulting the potato gods...',
-                'Warming up the circuits...',
-                'Typing furiously...'
-            ]);
+            // Start typing animation for the loading state
+            startTypingEffect(potatoResponse, 'Cooking up some goodness...', 150);
         } else {
-            // Clear any typing animation and type out the response
+            // Show the response with typing animation
             setTimeout(() => {
-                stopTypingEffect(); // Stop the animation
-                typeTextWithinTime(potatoResponse, response, 1000); // Finish typing within 1 second
-            }, 0); // Start immediately after stopping animation
+                stopTypingEffect(); // Stop the loading animation if any
+                startTypingEffect(potatoResponse, response, 50); // Animate response text typing
+            }, 0); // Start typing immediately after stopping any existing animation
         }
       
         return potatoResponse;
@@ -177,8 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Stop typing animation and show response
                     stopTypingEffect();
                     tempMessage.innerHTML = `
-                        <strong>PotatoGPT:</strong> ${reply}  <!-- Only update the response part -->
+                        <strong>PotatoGPT:</strong> 
                     `;
+                    startTypingEffect(tempMessage.querySelector('.potato-response'), reply, 50); // Animate response text typing
                     // Save to history
                     const history = loadHistory();
                     history.push({ prompt, response: reply });
