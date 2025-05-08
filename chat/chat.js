@@ -12,19 +12,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startTypingEffect(element, text, maxDuration = 2000) {
         let charIndex = 0;
-        element.textContent = '';
+        let displayText = '';
     
-        const interval = Math.max(10, Math.floor(maxDuration / text.length)); // Ensure a reasonable lower bound
+        const interval = Math.max(10, Math.floor(maxDuration / text.length));
+    
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;');
+        }
+    
+        function applyFormatting(str) {
+            // Basic markdown: **bold**, *italic*
+            return str
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
     
         function type() {
             if (charIndex < text.length) {
-                element.textContent += text[charIndex++];
+                displayText += escapeHtml(text[charIndex++]);
+                element.innerHTML = applyFormatting(displayText);
                 typingEffectTimeout = setTimeout(type, interval);
             }
         }
     
         type();
     }
+    
     
 
     function stopTypingEffect() {
