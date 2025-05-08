@@ -10,19 +10,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let ws;
     let typingEffectTimeout = null;
 
-    function startTypingEffect(element, text, interval = 100) {
+    function startTypingEffect(element, text, maxDuration = 2000) {
         let charIndex = 0;
-        element.textContent = ''; // clear existing content
-
+        element.textContent = '';
+    
+        const interval = Math.max(10, Math.floor(maxDuration / text.length)); // Ensure a reasonable lower bound
+    
         function type() {
             if (charIndex < text.length) {
                 element.textContent += text[charIndex++];
                 typingEffectTimeout = setTimeout(type, interval);
             }
         }
-
+    
         type();
     }
+    
 
     function stopTypingEffect() {
         clearTimeout(typingEffectTimeout);
@@ -57,6 +60,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function getRandomString(strings) {
+        if (!Array.isArray(strings) || strings.length === 0) return '';
+        const index = Math.floor(Math.random() * strings.length);
+        return strings[index];
+    }    
+
     function appendMessage(prompt, response = '', isLoading = false) {
         const item = document.createElement('div');
         item.className = 'chat-item';
@@ -69,8 +78,18 @@ document.addEventListener('DOMContentLoaded', () => {
         historyBox.appendChild(item);
         historyBox.scrollTop = historyBox.scrollHeight;
 
+        const phrases = [
+            'Cooking up some goodness...',
+            'Writing fire...',
+            'Consulting the potato gods...',
+            'Warming up the circuits...',
+            'Typing furiously...'
+        ];
+        
+        const randomPhrase = getRandomString(phrases);
+        
         if (isLoading) {
-            startTypingEffect(responseSpan, 'Cooking up some goodness...', 150);
+            startTypingEffect(responseSpan, randomPhrase, 150);;
         } else if (response) {
             startTypingEffect(responseSpan, response, 50);
         }
@@ -131,9 +150,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 const taskId = data.task_id;
                 connectWebSocket(taskId, (reply) => {
-                    stopTypingEffect(); // Stop the loading animation
-                    responseSpan.textContent = ''; // Clear "cooking" text
-                    startTypingEffect(responseSpan, reply, 50); // Animate final response
+                    stopTypingEffect();
+                    responseSpan.textContent = '';
+                    startTypingEffect(responseSpan, reply, 2000);
                     const history = loadHistory();
                     history.push({ prompt, response: reply });
                     if (history.length > 100) history.shift();
