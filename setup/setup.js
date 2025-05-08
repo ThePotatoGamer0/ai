@@ -36,6 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const styles = Array.from(document.querySelectorAll("input[name='styles']:checked"))
         .map(el => el.value);
       config.styles = styles;
+      const tone = Array.from(document.querySelectorAll("input[name='tone']:checked"))
+        .map(el => el.value);
+      config.tone = tone;
+      const kinks = Array.from(document.querySelectorAll("input[name='kinks']:checked"))
+        .map(el => el.value);
+      config.kinks = kinks;
 
       const characters = [];
       for (let [key, value] of formData.entries()) {
@@ -101,6 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
               const checkbox = document.querySelector(`input[name='styles'][value='${style}']`);
               if (checkbox) checkbox.checked = true;
             });
+            if (Array.isArray(config.tone)) {
+              config.styles.forEach(tone => {
+                const checkbox = document.querySelector(`input[name='tone'][value='${tone}']`);
+                if (checkbox) checkbox.checked = true;
+              });
+              if (Array.isArray(config.kinks)) {
+                config.styles.forEach(kink => {
+                  const checkbox = document.querySelector(`input[name='kinks'][value='${kink}']`);
+                  if (checkbox) checkbox.checked = true;
+                });
           }
         } catch (err) {
           alert('Invalid JSON file.');
